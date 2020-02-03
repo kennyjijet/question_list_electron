@@ -1,6 +1,8 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 
+//require('electron-reload')(__dirname);
+
 let mainWindow: Electron.BrowserWindow;
 
 function createWindow() {
