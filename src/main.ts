@@ -1,8 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 
-//require('electron-reload')(__dirname);
-
+require('electron-reload')(__dirname);
 let mainWindow: Electron.BrowserWindow;
 
 function createWindow() {
@@ -11,6 +10,7 @@ function createWindow() {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      nodeIntegration: true
     },
     width: 800,
   });
@@ -54,3 +54,8 @@ app.on("activate", () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+/*
+ipcMain.on('test:answer', function(event, data) {
+  mainWindow.webContents.send('test:answer', data);
+});
+*/

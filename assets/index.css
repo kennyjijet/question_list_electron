@@ -1,0 +1,23 @@
+#list_area
+{
+  margin: 0px auto;
+  overflow: auto;
+  width: 80%;
+  height: 100%;
+}
+
+.myList{
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: rgb(207, 207, 207);
+    cursor: pointer;
+  }
+  .myList:hover{
+    background-color:  rgb(182, 182, 182);
+  }
+  .myList:active{
+    background-color: rgb(56, 56, 56);
+  }
+
+
