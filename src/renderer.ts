@@ -1,28 +1,23 @@
-const { BrowserWindow, net } = require('electron').remote
+const { BrowserWindow, net  } = require('electron').remote
 const path = require('path');
 
 let addWindow: Electron.BrowserWindow;
 const list_area = document.querySelector('#list_area');
+const loading_text = document.querySelector('#loading_text');
+
 let answerTemp = "";
 
-/* Sample
-let listQuestion = {
-  question1: {answer:"answer1", question:"question1"},
-  question2: {answer:"answer2", question:"question2"},
-  question3: {answer:"answer3", question:"question3"},
-};
-*/
-
-let listQuestion = {};
+let listQuestion:object = {};
 function createQuestionList()
 {
+  loading_text.innerHTML = "";
   for (var value in listQuestion) {
     let my_div = htmlToElements("<div class='myList' data-key='" +value+ "'>" +listQuestion[value].question+"</div>");
     list_area.appendChild(my_div);
   }
 
   var myLists: NodeListOf<Element> = document.querySelectorAll('.myList');
-  myLists.forEach(function(value){
+  myLists.forEach(function(value:Element){
       value.addEventListener('click', (e) => {
           e.preventDefault()
           if(!addWindow){
@@ -35,7 +30,7 @@ function createQuestionList()
   })
 }
 
-function createAddWindow(){
+function createAddWindow() : void{
   //let display = electron.screen.getPrimaryDisplay();
   //let width = display.bounds.width;
   addWindow = new BrowserWindow({
@@ -70,25 +65,22 @@ request.on('response', (response) => {
   console.log(`STATUS: ${response.statusCode}`)
   console.log(`HEADERS: ${JSON.stringify(response.headers)}`)
   response.on('data', (chunk) => {
-    //console.log(`BODY: ${chunk}`)  
-    var str = new TextDecoder("utf-8").decode(chunk);
-    var message = JSON.parse(str);
-    //console.log(message);
-    var index = 0;
+    console.log(`BODY: ${chunk}`)  
+    var str:string = new TextDecoder("utf-8").decode(chunk);
+    var message:object = JSON.parse(str);
+    var index:number = 0;
     for (var value in message['results'])
     {
-      //console.log(message['results'][value].question);
-      //console.log(message['results'][value].correct_answer);
       var jsonData = {};
       index++;
       jsonData['question'] = message['results'][value].question
       jsonData['answer'] = message['results'][value].correct_answer
       listQuestion['question' + index] = jsonData;
     }
-    console.log(listQuestion);
     createQuestionList();
   })
   response.on('end', () => {
+    // Bug framework response.on is not emitted.
     //console.log('No more data in response.')
   })
 })

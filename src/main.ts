@@ -4,7 +4,7 @@ import * as path from "path";
 require('electron-reload')(__dirname);
 let mainWindow: Electron.BrowserWindow;
 
-function createWindow() {
+function createWindow() : void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     height: 600,
