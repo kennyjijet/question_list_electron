@@ -6,8 +6,8 @@ const list_area = document.querySelector('#list_area');
 const loading_text = document.querySelector('#loading_text');
 
 let answerTemp = "";
-
 let listQuestion:object = {};
+
 function createQuestionList()
 {
   loading_text.innerHTML = "";
@@ -31,8 +31,6 @@ function createQuestionList()
 }
 
 function createAddWindow() : void{
-  //let display = electron.screen.getPrimaryDisplay();
-  //let width = display.bounds.width;
   addWindow = new BrowserWindow({
     x:0,
     y:0,
