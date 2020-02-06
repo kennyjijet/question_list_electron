@@ -59,9 +59,12 @@ function createAddWindow() : void{
   });
 }
 
-
-const request = net.request('https://opentdb.com/api.php?amount=10')
+//url http://localhost:3000/test/question or https://opentdb.com/api.php?amount=10 
+const request = net.request('http://localhost:3000/test/question')
 request.on('response', (response) => {
+  response.on('error', (error) => {
+    console.log(`ERROR: ${JSON.stringify(error)}`)
+  })  
   console.log(`STATUS: ${response.statusCode}`)
   console.log(`HEADERS: ${JSON.stringify(response.headers)}`)
   response.on('data', (chunk) => {
@@ -83,6 +86,7 @@ request.on('response', (response) => {
     // Bug framework response.on is not emitted.
     //console.log('No more data in response.')
   })
+
 })
 request.end()
 
