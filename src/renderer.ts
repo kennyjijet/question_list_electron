@@ -1,18 +1,17 @@
-const { BrowserWindow, net  } = require('electron').remote
+const { BrowserWindow, net } = require('electron').remote;
 const path = require('path');
-
-let addWindow: Electron.BrowserWindow;
 const list_area = document.querySelector('#list_area');
 const loading_text = document.querySelector('#loading_text');
 
-let answerTemp = "";
-let listQuestion:object = {};
+let global_addWindow : Electron.BrowserWindow;
+let global_answerTemp = "";
+let global_listQuestion : object = {};
 
-function createQuestionList() {
+function createQuestionList() : void {
   loading_text.innerHTML = "";
-  // listQuestion is a object not array.
-  for (var value in listQuestion) {
-    let my_div = htmlToElements(`<div class='myList' data-key='${value}'>${listQuestion[value].question}</div>`); // -> modern ``{$hhh}
+  // listQuestion is a object not array. Could not use ForEach.
+  for (var value in global_listQuestion) {
+    let my_div = htmlToElements(`<div class='myList' data-key='${value}'>${global_listQuestion[value].question}</div>`);
     list_area.appendChild(my_div);
   }
 
@@ -20,18 +19,18 @@ function createQuestionList() {
   myLists.forEach((value:Element) => { 
       value.addEventListener('click', (e) => {
           e.preventDefault();
-          answerTemp = listQuestion[value.getAttribute('data-key')].answer;
-          if(!addWindow) {
+          global_answerTemp = global_listQuestion[value.getAttribute('data-key')].answer;
+          if(!global_addWindow) {
             createAddWindow();
-          }else{
-            addWindow.webContents.send('test:answer', answerTemp);
+          } else {
+            global_addWindow.webContents.send('test:answer', global_answerTemp);
           }
       });
   })
 }
 
 function createAddWindow() : void {
-  addWindow = new BrowserWindow({
+  global_addWindow = new BrowserWindow({
     x:0,
     y:0,
     height: 400,
@@ -43,17 +42,17 @@ function createAddWindow() : void {
     show: false
   });
 
-  addWindow.loadFile(path.join(__dirname, "./new_win.html"));
+  global_addWindow.loadFile(path.join(__dirname, "./new_win.html"));
 
-  addWindow.webContents.openDevTools();
+  global_addWindow.webContents.openDevTools();
 
-  addWindow.on("ready-to-show", () => {
-    addWindow.show();
-    addWindow.webContents.send('test:answer', answerTemp);
+  global_addWindow.on("ready-to-show", () => {
+    global_addWindow.show();
+    global_addWindow.webContents.send('test:answer', global_answerTemp);
   });
 
-  addWindow.on("closed", () => {
-    addWindow = null;
+  global_addWindow.on("closed", () => {
+    global_addWindow = null;
   });
 }
 
@@ -77,7 +76,7 @@ request.on('response', (response) => {
       index++;
       jsonData['question'] = message['results'][value].question;
       jsonData['answer'] = message['results'][value].correct_answer;
-      listQuestion['question' + index] = jsonData;
+      global_listQuestion['question' + index] = jsonData;
     }
     createQuestionList();
   })

@@ -51,31 +51,3 @@ app.on("activate", () => {
     createWindow();
   }
 });
-
-
-function createAddWindow() : void{
-  addWindow = new BrowserWindow({
-    x:0,
-    y:0,
-    height: 400,
-    webPreferences: {
-      nodeIntegration: true
-    },
-    width: 400,
-    title: "Answer",
-    show: false
-  });
-
-  addWindow.loadFile(path.join(__dirname, "./new_win.html"));
-
-  addWindow.webContents.openDevTools();
-
-  addWindow.on("ready-to-show", () => {
-    addWindow.show();
-    addWindow.webContents.send('test:answer', answerTemp);
-  });
-
-  addWindow.on("closed", () => {
-    addWindow = null;
-  });
-}
