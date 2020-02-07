@@ -6,7 +6,6 @@ body
 #list_area
 {
   margin: 50px auto;
-  overflow: auto;
   width: 80%;
   height: 100%;
 }

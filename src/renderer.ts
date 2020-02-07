@@ -8,21 +8,21 @@ const loading_text = document.querySelector('#loading_text');
 let answerTemp = "";
 let listQuestion:object = {};
 
-function createQuestionList()
-{
+function createQuestionList() {
   loading_text.innerHTML = "";
+  // listQuestion is a object not array.
   for (var value in listQuestion) {
-    let my_div = htmlToElements("<div class='myList' data-key='" +value+ "'>" +listQuestion[value].question+"</div>");
+    let my_div = htmlToElements(`<div class='myList' data-key='${value}'>${listQuestion[value].question}</div>`); // -> modern ``{$hhh}
     list_area.appendChild(my_div);
   }
 
   var myLists: NodeListOf<Element> = document.querySelectorAll('.myList');
-  myLists.forEach(function(value:Element){
+  myLists.forEach((value:Element) => { 
       value.addEventListener('click', (e) => {
           e.preventDefault();
-          answerTemp = listQuestion[value.getAttribute('data-key')].answer
-          if(!addWindow){
-            createAddWindow()
+          answerTemp = listQuestion[value.getAttribute('data-key')].answer;
+          if(!addWindow) {
+            createAddWindow();
           }else{
             addWindow.webContents.send('test:answer', answerTemp);
           }
@@ -30,7 +30,7 @@ function createQuestionList()
   })
 }
 
-function createAddWindow() : void{
+function createAddWindow() : void {
   addWindow = new BrowserWindow({
     x:0,
     y:0,
@@ -70,12 +70,13 @@ request.on('response', (response) => {
     var str:string = new TextDecoder("utf-8").decode(chunk);
     var message:object = JSON.parse(str);
     var index:number = 0;
+    // message['results'] is a object not array. cannot use es6 array function each map
     for (var value in message['results'])
     {
       var jsonData = {};
       index++;
-      jsonData['question'] = message['results'][value].question
-      jsonData['answer'] = message['results'][value].correct_answer
+      jsonData['question'] = message['results'][value].question;
+      jsonData['answer'] = message['results'][value].correct_answer;
       listQuestion['question' + index] = jsonData;
     }
     createQuestionList();
