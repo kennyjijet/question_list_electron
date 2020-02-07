@@ -19,12 +19,12 @@ function createQuestionList()
   var myLists: NodeListOf<Element> = document.querySelectorAll('.myList');
   myLists.forEach(function(value:Element){
       value.addEventListener('click', (e) => {
-          e.preventDefault()
+          e.preventDefault();
+          answerTemp = listQuestion[value.getAttribute('data-key')].answer
           if(!addWindow){
             createAddWindow()
-            answerTemp = listQuestion[value.getAttribute('data-key')].answer
           }else{
-            addWindow.webContents.send('test:answer', listQuestion[value.getAttribute('data-key')].answer);
+            addWindow.webContents.send('test:answer', answerTemp);
           }
       });
   })

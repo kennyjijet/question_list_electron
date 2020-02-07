@@ -1,3 +1,8 @@
+body
+{
+  background-color: gray;
+}
+
 #list_area
 {
   margin: 50px auto;
@@ -7,14 +12,17 @@
 }
 
 .myList{
-    width: 100%;
+    width: 80%;
     padding: 10px;
     margin-top: 10px;
     background-color: rgb(207, 207, 207);
     cursor: pointer;
+    transition: all .2s ease-in-out;
+    margin: 10px auto;
   }
   .myList:hover{
     background-color:  rgb(182, 182, 182);
+    transform: scale(1.1);
   }
   .myList:active{
     background-color: rgb(56, 56, 56);
