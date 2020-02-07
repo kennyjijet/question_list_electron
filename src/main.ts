@@ -1,12 +1,14 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain, ipcRenderer } from "electron";
 import * as path from "path";
 
 require('electron-reload')(__dirname);
-let mainWindow: Electron.BrowserWindow;
+let global_mainWindow : Electron.BrowserWindow;
+let global_newWindow : Electron.BrowserWindow;
+let global_answerTemp : string;
 
-function createWindow() : void {
+function createWindow () : void {
   // Create the browser window.
-  mainWindow = new BrowserWindow({
+  global_mainWindow = new BrowserWindow ({
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -16,17 +18,17 @@ function createWindow() : void {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, "../index.html"));
+  global_mainWindow.loadFile(path.join(__dirname, "../index.html"));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  global_mainWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
-  mainWindow.on("closed", () => {
+  global_mainWindow.on("closed", () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    mainWindow = null;
+    global_mainWindow = null;
   });
 }
 
@@ -47,7 +49,46 @@ app.on("window-all-closed", () => {
 app.on("activate", () => {
   // On OS X it"s common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
+  if (global_mainWindow === null) {
     createWindow();
   }
 });
+
+ipcMain.on('open:addWindow', (event : any, arg : string) => {
+  global_answerTemp = arg;
+  if(!global_newWindow) {
+    createNewWindow();
+  } else {
+    global_newWindow.webContents.send('test:answer', global_answerTemp);
+  }
+})
+
+function createNewWindow () : void {
+  global_newWindow = new BrowserWindow({
+    x : 0,
+    y : 0,
+    height : 400,
+    webPreferences : {
+      nodeIntegration: true
+    },
+    width : 400,
+    title : "Answer",
+    show : false
+  });
+
+  global_newWindow.loadFile(path.join(__dirname, "../new_win.html"));
+
+  global_newWindow.webContents.openDevTools();
+
+  global_newWindow.on("ready-to-show", () => {
+    global_newWindow.show();
+    
+    //ipcRenderer.send('test:answer', global_answerTemp);
+    global_newWindow.webContents.send('test:answer', global_answerTemp);
+  });
+
+  global_newWindow.on("closed", () => {
+    global_newWindow = null;
+  });
+}
+

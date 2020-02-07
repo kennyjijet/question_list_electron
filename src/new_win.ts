@@ -1,7 +1,6 @@
-
-var ipcRenderer = require('electron').ipcRenderer;
+import { ipcRenderer } from "electron";
 const ans = document.querySelector('#ans');
-ipcRenderer.on('test:answer', function (event:Event,store:string) {
-    ans.innerHTML = store
-    //ans.appendChild(my_div);  
+ipcRenderer.on('test:answer', (event : any, arg : string) => {
+    //console.log(answer);
+    ans.innerHTML = arg;
 });
